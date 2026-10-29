@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diffusion in an Active Medium — Lab Preparation &amp; Literature Review</title>
+<style>
+  :root{
+    --ink:#1a2332; --muted:#5a6b7f; --accent:#0b6fa4; --accent2:#c8522a;
+    --bg:#f7f9fb; --card:#ffffff; --line:#dde5ec; --refbg:#eef4f9;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Georgia","Times New Roman",serif;color:var(--ink);background:var(--bg);line-height:1.65}
+  header{background:linear-gradient(135deg,#0b3d5c 0%,#0b6fa4 100%);color:#fff;padding:3.2rem 1.5rem 2.4rem}
+  header .wrap{max-width:980px;margin:0 auto}
+  header h1{margin:0 0 .4rem;font-size:2.1rem;line-height:1.2}
+  header p.sub{margin:.2rem 0;font-size:1.05rem;opacity:.92}
+  header p.meta{margin-top:1rem;font-size:.9rem;opacity:.75;font-family:"Helvetica Neue",Arial,sans-serif}
+  .layout{max-width:980px;margin:0 auto;padding:0 1.5rem 4rem}
+  nav.toc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.2rem 1.6rem;margin:-1.6rem auto 2.5rem;position:relative;box-shadow:0 6px 24px rgba(11,61,92,.10);font-family:"Helvetica Neue",Arial,sans-serif;font-size:.92rem}
+  nav.toc strong{color:var(--accent)}
+  nav.toc ol{margin:.5rem 0 0;padding-left:1.4rem;columns:2;column-gap:2.5rem}
+  nav.toc a{color:var(--ink);text-decoration:none}
+  nav.toc a:hover{color:var(--accent);text-decoration:underline}
+  section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.8rem 2.2rem;margin-bottom:2rem}
+  h2{font-size:1.5rem;margin:.2rem 0 1rem;color:#0b3d5c;border-bottom:2px solid var(--accent);padding-bottom:.4rem}
+  h3{font-size:1.15rem;margin:1.4rem 0 .5rem;color:var(--accent)}
+  p{margin:.7rem 0}
+  .eq{display:block;text-align:center;margin:1rem 0;font-size:1.08rem;padding:.6rem;background:#fbfdfe;border:1px dashed var(--line);border-radius:6px}
+  .refbox{background:var(--refbg);border-left:4px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.4rem;margin:1.2rem 0}
+  .refbox h4{margin:0 0 .4rem;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.95rem;color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
+  .refbox p{margin:.35rem 0;font-size:.96rem}
+  figure{margin:1.6rem 0;text-align:center}
+  figure svg{max-width:100%;height:auto}
+  figcaption{font-size:.88rem;color:var(--muted);margin-top:.5rem;font-family:"Helvetica Neue",Arial,sans-serif}
+  ol.refs{font-size:.93rem;padding-left:1.6rem}
+  ol.refs li{margin-bottom:.55rem}
+  a{color:var(--accent)}
+  .key{background:#fdf6ec;border-left:4px solid var(--accent2);border-radius:0 8px 8px 0;padding:.9rem 1.3rem;margin:1.1rem 0}
+  .key strong{color:var(--accent2)}
+  table{border-collapse:collapse;margin:1rem 0;font-size:.95rem;font-family:"Helvetica Neue",Arial,sans-serif}
+  th,td{border:1px solid var(--line);padding:.45rem .8rem;text-align:left}
+  th{background:var(--refbg)}
+  ul.tight li{margin-bottom:.35rem}
+  .tag{display:inline-block;background:var(--refbg);color:var(--accent);font-family:"Helvetica Neue",Arial,sans-serif;font-size:.75rem;padding:.15rem .6rem;border-radius:999px;margin-right:.4rem;vertical-align:middle}
+  footer{text-align:center;color:var(--muted);font-size:.85rem;font-family:"Helvetica Neue",Arial,sans-serif;padding:2rem 1rem}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Diffusion in an Active Medium</h1>
+    <p class="sub">Experiment preparation and literature review — passive tracers in a bacterial bath, with an optical-tweezers module</p>
+    <p class="meta">Physics Advanced Laboratory (1140250 / 1180076) · Technion — Israel Institute of Technology · Winter 2026–27 · Prepared by Yuval Hirschmann, October 2026</p>
+  </div>
+</header>
+<div class="layout">
+<nav class="toc">
+  <strong>Contents</strong>
+  <ol>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#theory">Theory: equilibrium Brownian motion</a></li>
+    <li><a href="#active">Active media and the bacterial bath</a></li>
+    <li><a href="#paper">The Wu–Libchaber experiment</a></li>
+    <li><a href="#protocol">This experiment: protocol</a></li>
+    <li><a href="#tweezers">Optical tweezers module</a></li>
+    <li><a href="#questions">Preparation questions</a></li>
+    <li><a href="#refreshers">Concept refreshers</a></li>
+    <li><a href="#practical">Practical notes &amp; software</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</nav>
+
+<section id="overview">
+<h2>1 · Overview</h2>
+<p>Brownian motion — the incessant, jagged movement of microscopic bodies suspended in a fluid — was the first direct experimental window onto the atomic nature of matter and the statistical mechanics of Boltzmann, as formalized by Einstein in 1905. In a fluid at thermal equilibrium, the fluctuations of a suspended particle's velocity reflect thermal fluctuations and obey equilibrium statistical mechanics. This experiment asks what happens when the bath itself is <em>alive</em>: a suspension of swimming bacteria that continuously convert stored chemical energy into mechanical motion, driving the system far from equilibrium.</p>
+<p>The strategy, following Wu and Libchaber [9], is to watch <em>passive</em> micron-scale beads immersed in the bacterial bath. Their motion reports on the non-equilibrium dynamics of the medium: how much the fluctuations exceed thermal levels, whether the displacement statistics remain diffusive, and how the answer depends on bacterial concentration and activity. A second, independent module uses <em>optical tweezers</em> to measure forces on a trapped bead directly — calibrating the trap via confined Brownian motion and measuring the fluid viscosity via Stokes drag — which together with a diffusion measurement provides a test of the Einstein relation.</p>
+<div class="key"><strong>Why this is interesting.</strong> An active bath violates the assumptions behind the fluctuation–dissipation theorem. The beads can display "superdiffusive" motion at short times, an effective temperature two to three orders of magnitude above room temperature, and a breakdown of energy equipartition — all measurable with a microscope, a camera, and careful particle tracking.</div>
+</section>
+
+<section id="theory">
+<h2>2 · Theory: equilibrium Brownian motion</h2>
+<h3>2.1 The Langevin equation</h3>
+<p>A microscopic object in a fluid experiences a drag force and a rapidly fluctuating random force from molecular collisions. In the overdamped limit relevant here (inertia negligible on observation timescales), the Langevin equation reads</p>
+<span class="eq"><b>F</b> = −γ <b>ẋ</b> + <b>η</b>(t) = 0,&nbsp;&nbsp; ⟨<b>η</b>(t)⟩ = 0,&nbsp;&nbsp; ⟨η<sub>i</sub>(t) η<sub>j</sub>(t′)⟩ = 2γD δ<sub>ij</sub> δ(t − t′)</span>
+<p>where γ is the friction coefficient, <b>η</b> a white-noise random force, ⟨·⟩ an average over realizations, and <i>i, j</i> spatial indices. Solving gives vanishing mean displacement and the hallmark of diffusion,</p>
+<span class="eq">⟨<b>x</b>(t)⟩ = 0,&nbsp;&nbsp;&nbsp; ⟨x<sup>2</sup>(t)⟩ = 2dDt</span>
+<p>with <i>d</i> the number of dimensions and <i>D</i> the diffusion coefficient. The linear growth of the mean-squared displacement (MSD) with time is <em>the</em> signature of diffusive behavior; any departure, ⟨x<sup>2</sup>(t)⟩ ∝ t<sup>α</sup> with α ≠ 1, signals anomalous transport.</p>
+<h3>2.2 The Einstein relation</h3>
+<p>In thermal equilibrium the random force originates solely from thermal motion of the fluid molecules, and the fluctuation–dissipation theorem ties the diffusion coefficient to temperature and to the particle's mobility μ (velocity per unit drag force, μ = <i>v</i>/F<sub>drag</sub>):</p>
+<span class="eq">D = μ k<sub>B</sub>T &nbsp;&nbsp;(Einstein, 1905)</span>
+<p>For a sphere of radius <i>R</i>, Stokes' law gives μ = 1/(6πηR) with η the dynamic viscosity; non-spherical objects keep the same size and viscosity scaling with a different numerical prefactor. The standard derivation proceeds from the fluctuation–dissipation theorem — see §2 of Kubo's classic review [1].</p>
+<p>In the presence of active (non-thermal, energy-consuming) fluctuations the Einstein relation need not hold: <i>D</i> can depend on the strength and form of the active forcing, and on the shape and size of the tracers. One may nonetheless <em>define</em> an effective temperature by forcing the relation, T<sub>eff</sub> ≡ D/(μk<sub>B</sub>) — a diagnostic, not a thermodynamic temperature.</p>
+<div class="refbox"><h4>Refresher — mobility and Stokes drag</h4>
+<p>A sphere dragged slowly through a viscous fluid feels F<sub>drag</sub> = 6πηR<i>v</i> (creeping flow, Re ≪ 1). The mobility μ = 1/(6πηR) is the terminal velocity per unit force. Everything in this experiment is overdamped: inertial relaxation times (m/γ ~ 10<sup>−5</sup> s for a 10 μm bead) are far below the 30 ms frame time.</p></div>
+</section>
+
+<section id="active">
+<h2>3 · Active media and the bacterial bath</h2>
+<p><em>Bacillus subtilis</em> are non-pathogenic, rod-shaped bacteria that swim by rotating bundles of flagella. Their motion is a <em>run-and-tumble</em> walk: straight "runs" of order a second punctuated by abrupt "tumbles" that randomize direction — the canonical model of a self-propelled particle [2]. At high concentration they can switch to collective <em>swarming</em> motion.</p>
+<p>Because each bacterium continuously injects mechanical energy at the scale of its own body (~1–2 μm), a bacterial suspension is a fluid stirred from within at small scales. The central questions for a passive tracer immersed in it are: How are the injected energy and momentum distributed? Do tracer statistics remain diffusive? Is there anything left of equilibrium relations like D = μk<sub>B</sub>T or equipartition?</p>
+<div class="refbox"><h4>Refresher — run-and-tumble, in one paragraph</h4>
+<p>A self-propelled particle with speed <i>v</i><sub>0</sub> whose direction decorrelates over a persistence time τ has, in equilibrium-like fashion, an effective long-time diffusivity D ~ <i>v</i><sub>0</sub><sup>2</sup>τ/d. At times t ≪ τ the motion is ballistic (MSD ∝ t<sup>2</sup>); at t ≫ τ it is diffusive (MSD ∝ t). The crossover time and length are set by the persistence — in the bacterial bath, by the lifetime of collective structures rather than of individual runs.</p></div>
+</section>
+
+<section id="paper">
+<h2>4 · The Wu–Libchaber experiment (Phys. Rev. Lett. <b>84</b>, 3017, 2000)</h2>
+<p>The lab's bacterial-bath module follows the landmark measurement of Wu and Libchaber [9]: micron-scale polystyrene beads in a bath of swimming <em>E. coli</em>, confined to a freely suspended horizontal soap film. The film makes the geometry quasi-two-dimensional (its thickness ≈ the bead diameter) and slashes hydrodynamic dissipation to the surroundings, since the shear viscosity of air is only ~1% of the film's. Wildtype <em>E. coli</em> RP437 (body ~1 × 2–3 μm, flagella rotating at ~100 Hz) were transformed to express GFP for fluorescence velocimetry; stock concentration n ≈ 5.4×10<sup>10</sup> cells/cm<sup>3</sup>, diluted as needed, with the nonionic surfactant IGEPAL held at its critical micellar concentration (verified not to affect swimming).</p>
+<h3>4.1 Two regimes in the MSD</h3>
+<p>Beads as large as 10 μm — for which thermal Brownian motion is undetectable on these scales — fluctuated wildly in the bacterial bath. Their MSD, computed from ensembles of 10–100 tracks up to 5 minutes long, displayed a clean crossover:</p>
+<ul class="tight">
+<li><b>Short times (0.03 s &lt; t ≲ 1 s):</b> superdiffusive, ⟨Δr<sup>2</sup>(t)⟩ ~ t<sup>α</sup> with 1.5 &lt; α &lt; 2.0. Tracks consist of straight segments — ballistic-like motion.</li>
+<li><b>Long times (10 s &lt; t &lt; 300 s):</b> normal diffusion recovered, α ≈ 1.0, as the tracks randomize.</li>
+</ul>
+<p>The crossover is <em>not</em> the underdamped–overdamped transition of ordinary Brownian motion: the inertial damping time of a 10 μm bead is ~10<sup>−5</sup> s, hopelessly short. Instead it reflects the transient formation of coherent structures — swirls and jets of typical scale 10–20 μm — in the bacterial bath. Their lifetime t<sub>C</sub> sets the crossover, and t<sub>C</sub> grows linearly with bacterial density n.</p>
+<figure>
+<svg viewBox="0 0 640 340" width="640" role="img" aria-label="MSD log-log schematic">
+  <rect x="0" y="0" width="640" height="340" fill="#fbfdfe"/>
+  <line x1="70" y1="290" x2="610" y2="290" stroke="#5a6b7f" stroke-width="1.5"/>
+  <line x1="70" y1="290" x2="70" y2="20" stroke="#5a6b7f" stroke-width="1.5"/>
+  <text x="340" y="325" text-anchor="middle" font-size="14" fill="#5a6b7f" font-family="Arial">log t</text>
+  <text x="30" y="160" text-anchor="middle" font-size="14" fill="#5a6b7f" font-family="Arial" transform="rotate(-90 30 160)">log ⟨Δr²(t)⟩</text>
+  <path d="M 90 260 L 300 105 L 590 42" fill="none" stroke="#0b6fa4" stroke-width="3"/>
+  <line x1="300" y1="290" x2="300" y2="105" stroke="#c8522a" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="300" y="308" text-anchor="middle" font-size="13" fill="#c8522a" font-family="Arial">t_C</text>
+  <text x="180" y="150" font-size="14" fill="#0b6fa4" font-family="Arial" transform="rotate(-38 180 150)">MSD ∝ t^α, 1.5 &lt; α &lt; 2 (ballistic-like)</text>
+  <text x="440" y="130" font-size="14" fill="#0b6fa4" font-family="Arial" transform="rotate(-14 440 130)">MSD ∝ t (normal diffusion)</text>
+  <path d="M 90 288 L 590 208" fill="none" stroke="#9aa9b8" stroke-width="2" stroke-dasharray="2 3"/>
+  <text x="400" y="265" font-size="12" fill="#9aa9b8" font-family="Arial" transform="rotate(-7 400 265)">thermal diffusion of a 10 μm bead (unmeasurable here)</text>
+</svg>
+<figcaption><b>Figure 1.</b> Schematic of the MSD crossover reported by Wu &amp; Libchaber [9]: ballistic-like superdiffusion below the coherent-structure lifetime t<sub>C</sub>, normal diffusion above it. Thermal motion of the same beads is orders of magnitude weaker.</figcaption>
+</figure>
+<h3>4.2 A Langevin model with correlated noise</h3>
+<p>The minimal model that captures both regimes replaces the white noise with an exponentially <em>correlated</em> "collisional force":</p>
+<span class="eq">m d<b>v</b>/dt = −γ<b>v</b> + <b>f</b>(t),&nbsp;&nbsp; ⟨<b>f</b>(0)·<b>f</b>(t)⟩ = (4Dγ<sup>2</sup>/t<sub>C</sub>) e<sup>−t/t<sub>C</sub></sup></span>
+<p>which yields a velocity autocorrelation ⟨<b>v</b>(t)·<b>v</b>(0)⟩ = ⟨v(0)<sup>2</sup>⟩ e<sup>−t/t<sub>C</sub></sup> with ⟨v(0)<sup>2</sup>⟩ = 2D/t<sub>C</sub>, and hence the closed form</p>
+<span class="eq">⟨Δr<sup>2</sup>(t)⟩ = 4Dt [1 − e<sup>−t/t<sub>C</sub></sup>] &nbsp;&nbsp;(Wu–Libchaber Eq. 5)</span>
+<p>with asymptotes (D/t<sub>C</sub>)t<sup>2</sup> for t ≪ t<sub>C</sub> and Dt for t ≫ t<sub>C</sub>. Plotting ⟨r(t)<sup>2</sup>⟩/4Dt<sub>C</sub> against t/t<sub>C</sub> for all concentrations collapses the data onto the universal curve f(x) = x(1 − e<sup>−x</sup>).</p>
+<figure>
+<svg viewBox="0 0 640 300" width="640" role="img" aria-label="Universal scaling curve">
+  <rect x="0" y="0" width="640" height="300" fill="#fbfdfe"/>
+  <line x1="70" y1="250" x2="610" y2="250" stroke="#5a6b7f" stroke-width="1.5"/>
+  <line x1="70" y1="250" x2="70" y2="20" stroke="#5a6b7f" stroke-width="1.5"/>
+  <text x="340" y="285" text-anchor="middle" font-size="14" fill="#5a6b7f" font-family="Arial">t / t_C</text>
+  <text x="32" y="140" text-anchor="middle" font-size="14" fill="#5a6b7f" font-family="Arial" transform="rotate(-90 32 140)">⟨r²⟩ / 4Dt_C</text>
+  <path d="M 70 250 C 130 246 200 195 280 130 C 360 70 480 35 600 22" fill="none" stroke="#0b6fa4" stroke-width="3"/>
+  <circle cx="120" cy="243" r="4" fill="#c8522a"/><circle cx="180" cy="215" r="4" fill="#c8522a"/><circle cx="240" cy="163" r="4" fill="#c8522a"/><circle cx="330" cy="98" r="4" fill="#c8522a"/><circle cx="420" cy="58" r="4" fill="#c8522a"/><circle cx="510" cy="34" r="4" fill="#c8522a"/>
+  <text x="380" y="180" font-size="14" fill="#0b6fa4" font-family="Arial">f(x) = x(1 − e^−x): data for different n collapse</text>
+</svg>
+<figcaption><b>Figure 2.</b> The universal scaling form of Eq. (5): MSD data at different bacterial densities collapse onto a single curve (points schematic, after the inset of Fig. 3 in [9]).</figcaption>
+</figure>
+<h3>4.3 Concentration scaling and the failure of equipartition</h3>
+<p>Fitting Eq. (5) to the data at densities n = 0.67, 1.34, 5.35 × 10<sup>10</sup> cm<sup>−3</sup> gives, to good approximation, <b>linear</b> growth of all three characteristic quantities with n: the long-time diffusivity D, the crossover time t<sub>C</sub>, and the coherent length ℓ<sub>C</sub> ≡ √⟨Δr<sup>2</sup>(t<sub>C</sub>)⟩ (reaching t<sub>C</sub> ≈ 2 s and ℓ<sub>C</sub> ≈ 10 μm — the visual swirl size — at the highest n). Meanwhile the beads' rms velocity is <em>independent</em> of n: v<sub>rms</sub> ≈ 5.0 ± 1.5 μm/s, consistent with the scaling check ℓ<sub>C</sub> ≈ v<sub>rms</sub>t<sub>C</sub>.</p>
+<p>Two beads of different size (4.5 and 10 μm) at the same n gave D ∝ 1/R — the <em>same</em> radius dependence as Stokes–Einstein — but with an effective temperature, defined through T<sub>eff</sub> = D·6πηR/k<sub>B</sub>, of <b>2–3 orders of magnitude above room temperature</b>. Writing v<sub>rms</sub><sup>2</sup>/v<sub>0</sub><sup>2</sup> = (a/R)<sup>b</sup>, equilibrium equipartition would force b = 3 (energy shared equally per degree of freedom); the data instead suggest b = 1. The authors conclude that "the simple mechanism of equipartition of energy does not apply to our system and that hydrodynamic interactions must play a significant role" [9].</p>
+<div class="key"><strong>What to carry into the lab.</strong> The paper's logic is the template for your analysis: measure tracks → MSD → identify regimes on a log-log plot → fit Eq. (5) → extract D, t<sub>C</sub>, α as functions of bacterial concentration/activity → ask whether anything equilibrium-like survives.</div>
+<h3>4.4 The bacteria themselves are Maxwellian</h3>
+<p>A striking detail: the swimming-speed distribution of the bacteria in the film obeyed a Maxwell distribution, P(v) = (2|v|/v<sub>0</sub><sup>2</sup>) exp(−v<sup>2</sup>/v<sub>0</sub><sup>2</sup>) with v<sub>0</sub> ≈ 20 μm/s — at high densities, collisions and hydrodynamic dispersion randomize swimming directions "identical to that of an ideal gas" [9], even though the bath is violently out of equilibrium energetically.</p>
+</section>
+<section id="protocol">
+<h2>5 · This experiment: protocol</h2>
+<h3>5.1 Samples</h3>
+<ul class="tight">
+<li>Beads in <b>water</b> (equilibrium control), beads in the <b>bacteria suspension</b> (the active bath), beads in bacterial <b>supernatant ("sup")</b> (controls for chemistry without swimmers), and optionally <b>soap water</b>.</li>
+<li>Decide the bead-suspension-to-bath ratio; mix with pipettes; place a drop on the sample holder and stretch the droplet.</li>
+<li>Bacteria: <em>B. subtilis</em> cultured the day before (seed from −80 °C stock into 3–4 ml LB, incubate ~16 h at 30 °C shaking ≥ 200 RPM, unsealed; incubate a sterile LB tube as a contamination control). Morning of the experiment: dilute ~30 μl into warm sterile LB, incubate several hours until slightly cloudy. Concentrate by centrifuge (10 min at 5000 g is standard and safe for the cells) to raise concentration, collect sup, or resuspend in PBS (no nutrients → arrests multiplication).</li>
+</ul>
+<h3>5.2 Microscopy and recording</h3>
+<ul class="tight">
+<li><b>Beads — fluorescence</b>, movies of ~30–60 s.</li>
+<li><b>Bacteria — phase contrast or brightfield</b>, a few seconds of video or stills, taken <em>before and after</em> each fluorescence movie (documents activity over the session).</li>
+<li><b>Let each movie finish writing to disk before starting the next capture</b> — interrupting a write can destroy both files.</li>
+</ul>
+<h3>5.3 From movies to tracks</h3>
+<ul class="tight">
+<li><b>Bandpass filter</b> each frame to suppress pixel noise and large-scale intensity gradients — choose the parameters and inspect the result visually.</li>
+<li><b>Feature detection:</b> extract bright spots; compute subpixel positions as the intensity-weighted centroid ("center of mass") of each bead's signal [15–17].</li>
+<li><b>Linking:</b> connect detections frame-to-frame into trajectories — again, choose parameters and verify on a rendered overlay.</li>
+</ul>
+<h3>5.4 From tracks to physics (MSD analysis)</h3>
+<ul class="tight">
+<li>Analyze the ensemble with the course-modified <b>MSDAnalyzer</b> MATLAB package (see §9).</li>
+<li>Apply <b>drift correction</b>; keep only movies with small residual drift.</li>
+<li>Plot the mean MSD on linear <em>and</em> log-log scales; choose fit windows deliberately ("fit clip factors"); extract the diffusion coefficient <i>D</i> and the exponent α.</li>
+<li>Vary the bacterial concentration/activity and repeat: How does D depend on it? Does any drift correlate with concentration? If it does, that is a clean, directional departure from equilibrium.</li>
+</ul>
+<figure>
+<svg viewBox="0 0 680 150" width="680" role="img" aria-label="Analysis pipeline">
+  <rect x="0" y="0" width="680" height="150" fill="#fbfdfe"/>
+  <g font-family="Arial" font-size="13" fill="#1a2332">
+  <rect x="10" y="45" width="110" height="60" rx="8" fill="#eef4f9" stroke="#0b6fa4"/><text x="65" y="70" text-anchor="middle">Sample</text><text x="65" y="88" text-anchor="middle" font-size="11" fill="#5a6b7f">beads ± bacteria</text>
+  <rect x="150" y="45" width="110" height="60" rx="8" fill="#eef4f9" stroke="#0b6fa4"/><text x="205" y="70" text-anchor="middle">Microscopy</text><text x="205" y="88" text-anchor="middle" font-size="11" fill="#5a6b7f">fluor. / phase</text>
+  <rect x="290" y="45" width="110" height="60" rx="8" fill="#eef4f9" stroke="#0b6fa4"/><text x="345" y="70" text-anchor="middle">Tracking</text><text x="345" y="88" text-anchor="middle" font-size="11" fill="#5a6b7f">subpixel + link</text>
+  <rect x="430" y="45" width="110" height="60" rx="8" fill="#eef4f9" stroke="#0b6fa4"/><text x="485" y="70" text-anchor="middle">MSD ensemble</text><text x="485" y="88" text-anchor="middle" font-size="11" fill="#5a6b7f">drift-corrected</text>
+  <rect x="570" y="45" width="100" height="60" rx="8" fill="#fdf6ec" stroke="#c8522a"/><text x="620" y="70" text-anchor="middle">D, α, t_C</text><text x="620" y="88" text-anchor="middle" font-size="11" fill="#5a6b7f">vs activity</text>
+  </g>
+  <g stroke="#5a6b7f" stroke-width="2" fill="none" marker-end="none"><line x1="120" y1="75" x2="148" y2="75"/><line x1="260" y1="75" x2="288" y2="75"/><line x1="400" y1="75" x2="428" y2="75"/><line x1="540" y1="75" x2="568" y2="75"/></g>
+  <g fill="#5a6b7f"><polygon points="148,71 148,79 155,75"/><polygon points="288,71 288,79 295,75"/><polygon points="428,71 428,79 435,75"/><polygon points="568,71 568,79 575,75"/></g>
+</svg>
+<figcaption><b>Figure 3.</b> The measurement pipeline. Every stage has parameters you must choose and validate — the physics is only as good as the tracking.</figcaption>
+</figure>
+<div class="refbox"><h4>Refresher — measurement noise on the MSD</h4>
+<p>A static localization error ε (pixel/subpixel noise) adds a time-<em>independent</em> offset to the MSD: ⟨Δr<sup>2</sup><sub>meas</sub>(t)⟩ = ⟨Δr<sup>2</sup>(t)⟩ + 2ε<sup>2</sup> (in 2D, with cross terms vanishing). On a linear plot this shifts the curve up; on a log-log plot it flattens the short-time end toward a plateau, which can masquerade as a change of regime. Knowing your ε (from immobilized beads) is what lets you trust the short-time slope [15, 16].</p></div>
+</section>
+
+<section id="tweezers">
+<h2>6 · Optical tweezers module</h2>
+<p>A focused laser traps a micron bead in an approximately harmonic potential U = ½kx<sup>2</sup>; displacement from the trap center therefore reads out force, F = kx [10, 11]. Two independent measurements:</p>
+<ul class="tight">
+<li><b>Confined Brownian motion (calibration).</b> Hold the bead and record its position distribution around the trap center. Equipartition (via the virial theorem) gives ½k⟨x<sup>2</sup>⟩ = ½k<sub>B</sub>T per quadratic degree of freedom — this calibrates the trap stiffness k against the known temperature.</li>
+<li><b>Stokes drag (viscosity).</b> Translate the trap at constant velocity v; the bead lags the center by x where kx = 6πηRv. Measuring x(v) — try several velocities — yields the viscosity η.</li>
+</ul>
+<p>Together with a diffusion measurement (D = μk<sub>B</sub>T = k<sub>B</sub>T/6πηR), the two measurements constitute an explicit test of the Einstein relation in the equilibrium sample — and a baseline against which the active-bath deviations stand out. Use subpixel detection throughout.</p>
+<figure>
+<svg viewBox="0 0 640 260" width="640" role="img" aria-label="Optical tweezers principle">
+  <rect x="0" y="0" width="640" height="260" fill="#fbfdfe"/>
+  <path d="M 60 200 Q 320 -60 580 200" fill="none" stroke="#0b6fa4" stroke-width="3"/>
+  <text x="590" y="200" font-size="13" fill="#0b6fa4" font-family="Arial">U(x) = ½kx²</text>
+  <circle cx="380" cy="72" r="16" fill="#fdf6ec" stroke="#c8522a" stroke-width="2.5"/>
+  <line x1="320" y1="34" x2="380" y2="72" stroke="#c8522a" stroke-width="2" stroke-dasharray="5 4"/>
+  <text x="352" y="42" font-size="13" fill="#c8522a" font-family="Arial">x (lag)</text>
+  <line x1="400" y1="80" x2="470" y2="80" stroke="#1a2332" stroke-width="2"/>
+  <polygon points="470,76 470,84 478,80" fill="#1a2332"/>
+  <text x="430" y="70" font-size="13" font-family="Arial" fill="#1a2332">trap moves at v</text>
+  <line x1="364" y1="88" x2="300" y2="88" stroke="#5a6b7f" stroke-width="2"/>
+  <polygon points="300,84 300,92 292,88" fill="#5a6b7f"/>
+  <text x="290" y="108" font-size="12" font-family="Arial" fill="#5a6b7f">F_drag = 6πηRv = kx</text>
+</svg>
+<figcaption><b>Figure 4.</b> The force balance behind the viscosity measurement: a bead trapped in the harmonic optical potential lags a moving trap by x, where the restoring force kx balances the Stokes drag.</figcaption>
+</figure>
+<div class="refbox"><h4>Refresher — interface effects (read before comparing samples)</h4>
+<p>Walls and free surfaces bias Brownian motion. A liquid–gas interface can <em>enhance</em> mobility [12]; a liquid–solid interface (the closed cell used for the tweezers) <em>restricts</em> diffusion and enhances drag [13, 14]. Open-drop and closed-cell measurements are not directly interchangeable — keep the geometry consistent within each comparison.</p></div>
+</section>
+
+<section id="questions">
+<h2>7 · Preparation questions (from the lab briefing)</h2>
+<p>Work these before the session; pointers in brackets.</p>
+<ol>
+<li>Calculate the diffusion coefficient of spherical beads of radius R = 1 μm in water at 25 °C. [D = k<sub>B</sub>T/6πηR, η<sub>water</sub> ≈ 0.89 mPa·s → D ≈ 0.25 μm²/s.]</li>
+<li>Optical resolution of a 10×/0.25 objective, and of a 63×/1.2? [Abbe: d = λ/(2·NA).]</li>
+<li>Position is an intensity-weighted centroid over N pixels, each with independent uncertainty δx — what is the uncertainty of the centroid? [Error propagation, §3 of the briefing; see also 15–17.]</li>
+<li>From the Langevin equation, compute ⟨<b>x</b>(t)⟩ and the MSD. [Swap averaging and time integration; the noise correlator is a delta function.]</li>
+<li>Add constant drift v<sub>drift</sub>: up to what timescale does motion look diffusive? Plot MSD vs time for drift speeds spanning the diffusive, ballistic, and transitional regimes — use log-log. [Crossover when v<sub>drift</sub>·t ~ √(2dDt).]</li>
+<li>Small static measurement error ε added to positions: how do the linear and log-log MSD plots change? [Plateau 2ε² at short times — see the refresher in §5.]</li>
+<li>Use the virial and equipartition theorems to relate T to ⟨U⟩ for U = ½kx²; find k in terms of ⟨x²⟩ and T. [k = k<sub>B</sub>T/⟨x²⟩.]</li>
+<li>A bead of radius R in a trap U = ½kx² under flow v: find the viscosity in terms of the trap displacement x. [η = kx/(6πRv).]</li>
+</ol>
+</section>
+
+<section id="refreshers">
+<h2>8 · Concept refreshers (stat-mech level, compact)</h2>
+<div class="refbox"><h4>The fluctuation–dissipation theorem (FDT)</h4>
+<p>Near equilibrium, the same microscopic collisions that damp motion also drive fluctuations; hence the one-line relation D = μk<sub>B</sub>T. Kubo's review [1] derives this formally (linear response): the response of a system to a small perturbation is governed by the equilibrium correlation function of the fluctuating quantity. Active media violate the premise — energy is injected mechanically — so the relation fails and "temperature" becomes a fitted diagnostic rather than a state variable.</p></div>
+<div class="refbox"><h4>Equipartition and the virial theorem</h4>
+<p>In equilibrium each quadratic degree of freedom carries ½k<sub>B</sub>T of mean energy. For a harmonically trapped bead, ½k⟨x²⟩ = ½k<sub>B</sub>T per axis — the basis of trap calibration. Wu–Libchaber's b = 1 (rather than b = 3) scaling of v<sub>rms</sub><sup>2</sup>/v<sub>0</sub><sup>2</sup> with bead size is direct evidence that equipartition fails in the bacterial bath [9].</p></div>
+<div class="refbox"><h4>Effective temperature</h4>
+<p>Forcing D = μk<sub>B</sub>T<sub>eff</sub> on non-equilibrium data defines T<sub>eff</sub>. In the bacterial bath T<sub>eff</sub> is 10²–10³ × room temperature [9]. Different observables generally yield different T<sub>eff</sub> — the tell-tale sign that the system has no true temperature.</p></div>
+<div class="refbox"><h4>Microscopy essentials</h4>
+<p><b>Numerical aperture</b> NA = n·sinθ sets resolution, d = λ/(2·NA) (Abbe) [5, 6]. <b>Köhler illumination</b> gives even, controlled illumination — run the alignment tutorial before the session [4]. <b>Phase contrast</b> converts phase shifts from transparent specimens (bacteria!) into amplitude contrast [7]. <b>Fluorescence</b> images only the labeled species (the beads) with high contrast [8]. <b>Conjugate planes</b>: knowing which planes are imaged where tells you what each diaphragm does [3].</p></div>
+</section>
+
+<section id="practical">
+<h2>9 · Practical notes &amp; software</h2>
+<h3>9.1 Analysis software (install and walk through tutorials before the session)</h3>
+<table>
+<tr><th>Tool</th><th>What for</th><th>Link</th></tr>
+<tr><td>MSDAnalyzer (course-modified)</td><td>Ensemble MSD analysis in MATLAB</td><td><a href="https://github.com/nivieru/msdanalyzer/">github.com/nivieru/msdanalyzer</a></td></tr>
+<tr><td>MSDAnalyzer documentation</td><td>Tutorial and reference</td><td><a href="https://tinevez.github.io/msdanalyzer/">tinevez.github.io/msdanalyzer</a></td></tr>
+<tr><td>Particle tracker (Blair–Dufresne)</td><td>MATLAB feature finding + linking</td><td><a href="http://site.physics.georgetown.edu/matlab/index.html">site.physics.georgetown.edu/matlab</a></td></tr>
+<tr><td>Course example analysis code</td><td>Worked example for this experiment</td><td><a href="https://github.com/nivieru/BrownianMotion">github.com/nivieru/BrownianMotion</a></td></tr>
+<tr><td>Fiji (ImageJ)</td><td>Movie handling / inspection; add the FFMPEG update site to open .avi (File → Import → Movie)</td><td><a href="https://imagej.net/Fiji/Downloads">imagej.net/Fiji</a> · <a href="https://imagej.net/How_to_follow_a_3rd_party_update_site">update-site how-to</a></td></tr>
+</table>
+<h3>9.2 System startup (condensed; follow the lab's posted order)</h3>
+<p>AC on → (tweezers: VALAP heater on) → compressor on, off once pressure stabilizes → (fluorescence: mercury lamp on; wait ≥ 20 min before switching off) → (tweezers: laser on ≥ 15 min before use) → system key → computer → microscope uncovered and on → software in order (Axiovision, then Palmrobo) → tweezers "enable" button last. Shutdown in reverse; wipe water-immersion objectives.</p>
+<h3>9.3 What to bring</h3>
+<p>Worked answers to §7, the tracking parameters you intend to start from, and this review. Decide in advance which concentrations you will measure and in what order — bacteria keep swimming, so the sample clock is always running.</p>
+</section>
+
+<section id="references">
+<h2>10 · References</h2>
+<ol class="refs">
+<li>R. Kubo, "The fluctuation-dissipation theorem," <i>Reports on Progress in Physics</i> <b>29</b>, 255 (1966). <a href="https://doi.org/10.1088/0034-4885/29/1/306">doi:10.1088/0034-4885/29/1/306</a></li>
+<li>M. Sidortsov, Y. Morgenstern, and A. Be'er, "Role of tumbling in bacterial swarming," <i>Physical Review E</i> <b>96</b>, 022407 (2017). <a href="https://doi.org/10.1103/PhysRevE.96.022407">doi:10.1103/PhysRevE.96.022407</a></li>
+<li>T. J. Fellers and M. W. Davidson, "Conjugate Planes in Optical Microscopy," Nikon MicroscopyU. <a href="https://www.microscopyu.com/microscopy-basics/conjugate-planes-in-optical-microscopy">link</a></li>
+<li>M. Parry-Hill, R. T. Sutter, and M. W. Davidson, "Köhler Illumination alignment tutorial," Nikon MicroscopyU. <a href="https://www.microscopyu.com/tutorials/kohler">link</a></li>
+<li>M. W. Davidson, "Numerical Aperture," Nikon MicroscopyU. <a href="https://www.microscopyu.com/microscopy-basics/numerical-aperture">link</a></li>
+<li>M. W. Davidson, "Resolution," Nikon MicroscopyU. <a href="https://www.microscopyu.com/microscopy-basics/resolution">link</a></li>
+<li>D. B. Murphy et al., "Phase Contrast Microscopy," Nikon MicroscopyU. <a href="https://www.microscopyu.com/techniques/phase-contrast/introduction-to-phase-contrast-microscopy">link</a></li>
+<li>K. R. Spring and M. W. Davidson, "Fluorescence Microscopy," Nikon MicroscopyU. <a href="https://www.microscopyu.com/techniques/fluorescence/introduction-to-fluorescence-microscopy">link</a></li>
+<li>X.-L. Wu and A. Libchaber, "Particle Diffusion in a Quasi-Two-Dimensional Bacterial Bath," <i>Physical Review Letters</i> <b>84</b>, 3017 (2000). <a href="https://doi.org/10.1103/PhysRevLett.84.3017">doi:10.1103/PhysRevLett.84.3017</a></li>
+<li>S. Block, "An introduction to optical tweezers" (2015). <a href="https://blocklab.stanford.edu/optical_tweezers.html">link</a></li>
+<li>J. E. Molloy and M. Padgett, "Lights, action: Optical tweezers," <i>Contemporary Physics</i> <b>43</b>, 241 (2002). <a href="https://doi.org/10.1080/00107510110116051">doi:10.1080/00107510110116051</a></li>
+<li>J. C. Benavides-Parra et al., "Brownian motion near a liquid-gas interface," <i>J. Chem. Phys.</i> <b>145</b>, 114902 (2016). <a href="https://doi.org/10.1063/1.4962746">doi:10.1063/1.4962746</a></li>
+<li>K. Huang and I. Szlufarska, "Effect of interfaces on the nearby Brownian motion," <i>Nature Communications</i> <b>6</b>, 8558 (2015). <a href="https://doi.org/10.1038/ncomms9558">doi:10.1038/ncomms9558</a></li>
+<li>A. Mongruel, "Near-wall hydrodynamic interactions between a settling sphere and a wall," <i>J. Phys.: Conf. Ser.</i> <b>392</b>, 012011 (2012). <a href="https://doi.org/10.1088/1742-6596/392/1/012011">doi:10.1088/1742-6596/392/1/012011</a></li>
+<li>trackpy documentation, "Subpixel Accuracy and Uncertainty Estimation." <a href="http://soft-matter.github.io/trackpy/v0.3.0/tutorial/uncertainty.html">link</a></li>
+<li>T. Savin and P. S. Doyle, "Static and Dynamic Errors in Particle Tracking Microrheology," <i>Biophysical Journal</i> <b>88</b>, 623 (2005). <a href="https://doi.org/10.1529/biophysj.104.042457">doi:10.1529/biophysj.104.042457</a></li>
+<li>R. E. Thompson, D. R. Larson, and W. W. Webb, "Precise nanometer localization analysis for individual fluorescent probes," <i>Biophysical Journal</i> <b>82</b>, 2775 (2002). <a href="https://doi.org/10.1016/S0006-3495(02)75618-X">doi:10.1016/S0006-3495(02)75618-X</a></li>
+</ol>
+<p><span class="tag">Further reading</span> A. Einstein, <i>Ann. Phys. (Leipzig)</i> <b>17</b>, 549 (1905) <a href="https://doi.org/10.1002/andp.19053220806">doi</a> · H. C. Berg and D. A. Brown, <i>Nature</i> <b>239</b>, 500 (1972) · T. Vicsek et al., <i>Phys. Rev. Lett.</i> <b>75</b>, 1226 (1995) · J. Toner and Y. Tu, <i>Phys. Rev. Lett.</i> <b>75</b>, 4326 (1995).</p>
+</section>
+</div>
+<footer>
+Prepared as an original study guide for the Physics Advanced Laboratory at the Technion. The lab briefing and the Wu–Libchaber article are the property of their respective authors/publishers and are not reproduced here; quotations are brief and attributed. Figures are original schematic illustrations.
+</footer>
+</body>
+</html>
