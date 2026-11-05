@@ -10,7 +10,7 @@ An original English preparation guide and literature review for the **"Brownian 
 - A review of Wu & Libchaber, *Phys. Rev. Lett.* **84**, 3017 (2000) — the experiment this lab follows
 - The full lab protocol: samples, microscopy, particle tracking, MSD analysis, concentration dependence
 - The optical-tweezers module (trap calibration, Stokes-drag viscometry)
-- The briefing's preparation questions, with pointers
+- The briefing's preparation questions, with full worked answers
 - Compact stat-mech-level refreshers (FDT, equipartition, measurement noise, microscopy essentials)
 - Software links and practical notes
 
